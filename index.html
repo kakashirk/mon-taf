@@ -10,7 +10,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Mon Taf 🚂</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0d1117;
@@ -25,8 +25,8 @@
     --text: #e6edf3;
     --muted: #7d8590;
     --faint: #30363d;
-    --syne: 'Syne', sans-serif;
-    --mono: 'JetBrains Mono', monospace;
+    --syne: 'Playfair Display', serif;
+    --mono: 'Courier Prime', monospace;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; background:var(--bg); color:var(--text); font-family:var(--syne); overscroll-behavior:none; }
@@ -64,14 +64,14 @@
   .train-card.next::before { opacity:1; }
   .train-card.next { border-color:rgba(232,0,45,0.25); }
   @keyframes rise { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
-  .next-badge { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; padding:3px 8px; border-radius:20px; background:var(--red-dim); color:var(--red); border:1px solid rgba(232,0,45,0.2); letter-spacing:0.5px; width:fit-content; margin-bottom:-2px; }
+  .next-badge { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:700; padding:3px 8px; border-radius:20px; background:var(--red-dim); color:var(--red); border:1px solid rgba(232,0,45,0.2); letter-spacing:0.5px; width:fit-content; margin-bottom:-2px; }
   .card-top { display:flex; align-items:flex-start; justify-content:space-between; }
   .times { display:flex; align-items:baseline; gap:6px; }
   .dep-time { font-size:36px; font-weight:800; letter-spacing:-1px; line-height:1; }
   .arr-time { font-size:18px; font-weight:600; color:var(--muted); }
   .arrow { color:var(--muted); font-size:14px; }
   .right-col { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
-  .duration-pill { font-family:var(--mono); font-size:11px; font-weight:500; padding:4px 10px; border-radius:20px; background:rgba(210,153,34,0.12); color:var(--yellow); border:1px solid rgba(210,153,34,0.2); }
+  .duration-pill { font-family:var(--mono); font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; background:rgba(210,153,34,0.12); color:var(--yellow); border:1px solid rgba(210,153,34,0.2); }
   .countdown { font-family:var(--mono); font-size:10px; color:var(--muted); }
   .card-bottom { display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid var(--faint); flex-wrap:wrap; gap:6px; }
   .transfer-info { font-family:var(--mono); font-size:11px; }
@@ -79,7 +79,7 @@
   .one-change { color:var(--yellow); }
   .multi-change { color:var(--muted); }
   .platform-info { font-family:var(--mono); font-size:11px; color:var(--muted); }
-  .platform-num { color:var(--blue); font-weight:500; }
+  .platform-num { color:var(--blue); font-weight:700; }
   .detail-toggle { background:none; border:none; color:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:1px; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px; transition:color 0.15s; }
   .detail-toggle:hover { color:var(--text); }
   .legs-detail { display:none; flex-direction:column; gap:8px; padding-top:10px; border-top:1px dashed var(--faint); animation:fadeIn 0.2s ease; }
