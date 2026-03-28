@@ -95,6 +95,16 @@
   .spinner { width:28px; height:28px; border:2px solid var(--border); border-top-color:var(--red); border-radius:50%; animation:spin 0.7s linear infinite; }
   @keyframes spin { to{transform:rotate(360deg);} }
   .error-box { background:rgba(232,0,45,0.07); border:1px solid rgba(232,0,45,0.2); border-radius:10px; padding:14px 16px; font-family:var(--mono); font-size:12px; color:#ff7096; line-height:1.6; }
+  .segments-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .seg-badge { font-family:var(--mono); font-size:11px; font-weight:700; padding:3px 8px; border-radius:6px; border:1px solid; white-space:nowrap; }
+  .seg-arrow { color:var(--muted); font-size:12px; }
+  .seg-station { font-family:var(--mono); font-size:11px; color:var(--text); }
+  .chav-sep { display:flex; align-items:center; gap:8px; padding:6px 0; }
+  .chav-line { flex:1; height:1px; background:var(--border); }
+  .chav-label { font-family:var(--mono); font-size:10px; color:var(--blue); letter-spacing:1px; white-space:nowrap; }
+  .platform-tag { font-family:var(--mono); font-size:10px; background:rgba(88,166,255,0.1); color:var(--blue); border:1px solid rgba(88,166,255,0.2); padding:2px 7px; border-radius:4px; }
+  .dur-tag { font-family:var(--mono); font-size:10px; background:rgba(210,153,34,0.1); color:var(--yellow); border:1px solid rgba(210,153,34,0.2); padding:2px 7px; border-radius:4px; }
+  .leg-dur { font-family:var(--mono); font-size:10px; color:var(--muted); margin-top:2px; }
 </style>
 </head>
 <body>
