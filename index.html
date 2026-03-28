@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mon Taf">
+<meta name="theme-color" content="#0d1117">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Mon Taf 🚂</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --card: #1c2128;
+    --border: #30363d;
+    --red: #e8002d;
+    --red-dim: rgba(232,0,45,0.12);
+    --green: #3fb950;
+    --yellow: #d29922;
+    --blue: #58a6ff;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --faint: #30363d;
+    --syne: 'Syne', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; background:var(--bg); color:var(--text); font-family:var(--syne); overscroll-behavior:none; }
+  .app { display:flex; flex-direction:column; min-height:100dvh; max-width:480px; margin:0 auto; padding:env(safe-area-inset-top,12px) 0 env(safe-area-inset-bottom,0); }
+  .header { padding:20px 20px 0; display:flex; justify-content:space-between; align-items:flex-start; }
+  .title { font-size:28px; font-weight:800; letter-spacing:-0.5px; line-height:1.1; }
+  .title span { color:var(--red); }
+  .clock-badge { font-family:var(--mono); font-size:13px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:5px 10px; border-radius:20px; letter-spacing:1px; margin-top:4px; }
+  .gps-status-bar { margin:10px 20px 0; font-family:var(--mono); font-size:10px; letter-spacing:1.5px; color:var(--blue); display:none; align-items:center; gap:6px; }
+  .gps-status-bar.visible { display:flex; }
+  .gps-dot { width:6px; height:6px; border-radius:50%; background:var(--blue); animation:blink 1s step-end infinite; }
+  @keyframes blink { 50%{opacity:0;} }
+  .route-bar { margin:12px 20px 0; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .route-row { display:flex; align-items:center; gap:10px; }
+  .route-icon { font-size:14px; width:22px; text-align:center; flex-shrink:0; color:var(--muted); }
+  .route-label { font-family:var(--mono); font-size:9px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; width:38px; flex-shrink:0; }
+  .route-input { flex:1; background:var(--card); border:1px solid var(--border); color:var(--text); font-family:var(--syne); font-size:15px; font-weight:600; padding:8px 12px; border-radius:8px; outline:none; transition:border-color 0.2s; min-width:0; }
+  .route-input:focus { border-color:var(--blue); }
+  .gps-btn { background:var(--card); border:1px solid var(--border); color:var(--muted); font-size:16px; width:36px; height:36px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
+  .gps-btn.active { border-color:var(--blue); color:var(--blue); background:rgba(88,166,255,0.08); }
+  .gps-btn.spinning { animation:spin 1s linear infinite; }
+  .divider { display:flex; align-items:center; gap:8px; padding-left:32px; }
+  .divider-line { flex:1; height:1px; background:var(--border); }
+  .divider-icon { color:var(--muted); font-size:13px; }
+  .search-btn { margin:14px 20px 0; width:calc(100% - 40px); background:var(--red); color:white; border:none; font-family:var(--syne); font-size:17px; font-weight:700; padding:16px; border-radius:14px; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; position:relative; overflow:hidden; }
+  .search-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 60%); pointer-events:none; }
+  .search-btn:active { transform:scale(0.97); background:#c2001f; }
+  .search-btn:disabled { background:var(--surface); color:var(--muted); cursor:default; transform:none; }
+  .results { flex:1; padding:18px 20px 24px; display:flex; flex-direction:column; gap:10px; overflow-y:auto; }
+  .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
+  .results-title { font-family:var(--mono); font-size:10px; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
+  .results-count { font-family:var(--mono); font-size:10px; color:var(--muted); }
+  .train-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; display:flex; flex-direction:column; gap:10px; animation:rise 0.3s ease both; position:relative; overflow:hidden; }
+  .train-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--red); opacity:0; transition:opacity 0.2s; }
+  .train-card.next::before { opacity:1; }
+  .train-card.next { border-color:rgba(232,0,45,0.25); }
+  @keyframes rise { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+  .next-badge { display:inline-block; font-family:var(--mono); font-size:10px; font-weight:500; padding:3px 8px; border-radius:20px; background:var(--red-dim); color:var(--red); border:1px solid rgba(232,0,45,0.2); letter-spacing:0.5px; width:fit-content; margin-bottom:-2px; }
+  .card-top { display:flex; align-items:flex-start; justify-content:space-between; }
+  .times { display:flex; align-items:baseline; gap:6px; }
+  .dep-time { font-size:36px; font-weight:800; letter-spacing:-1px; line-height:1; }
+  .arr-time { font-size:18px; font-weight:600; color:var(--muted); }
+  .arrow { color:var(--muted); font-size:14px; }
+  .right-col { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  .duration-pill { font-family:var(--mono); font-size:11px; font-weight:500; padding:4px 10px; border-radius:20px; background:rgba(210,153,34,0.12); color:var(--yellow); border:1px solid rgba(210,153,34,0.2); }
+  .countdown { font-family:var(--mono); font-size:10px; color:var(--muted); }
+  .card-bottom { display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid var(--faint); flex-wrap:wrap; gap:6px; }
+  .transfer-info { font-family:var(--mono); font-size:11px; }
+  .direct { color:var(--green); }
+  .one-change { color:var(--yellow); }
+  .multi-change { color:var(--muted); }
+  .platform-info { font-family:var(--mono); font-size:11px; color:var(--muted); }
+  .platform-num { color:var(--blue); font-weight:500; }
+  .detail-toggle { background:none; border:none; color:var(--muted); font-family:var(--mono); font-size:10px; letter-spacing:1px; cursor:pointer; padding:0; display:flex; align-items:center; gap:4px; transition:color 0.15s; }
+  .detail-toggle:hover { color:var(--text); }
+  .legs-detail { display:none; flex-direction:column; gap:8px; padding-top:10px; border-top:1px dashed var(--faint); animation:fadeIn 0.2s ease; }
+  .legs-detail.open { display:flex; }
+  @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+  .leg-row { display:flex; gap:10px; align-items:flex-start; }
+  .leg-times { font-family:var(--mono); font-size:11px; color:var(--muted); width:60px; flex-shrink:0; line-height:1.6; }
+  .leg-line-badge { display:inline-block; font-family:var(--mono); font-size:10px; background:var(--card); border:1px solid var(--border); color:var(--text); padding:2px 7px; border-radius:4px; margin-bottom:3px; }
+  .leg-stations { font-size:12px; color:var(--muted); line-height:1.5; }
+  .state-box { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding:40px 20px; text-align:center; }
+  .state-icon { font-size:44px; }
+  .state-text { font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:1px; line-height:1.7; }
+  .spinner { width:28px; height:28px; border:2px solid var(--border); border-top-color:var(--red); border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg);} }
+  .error-box { background:rgba(232,0,45,0.07); border:1px solid rgba(232,0,45,0.2); border-radius:10px; padding:14px 16px; font-family:var(--mono); font-size:12px; color:#ff7096; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="title">Mon<br><span>Taf</span> 🚂</div>
+    <div class="clock-badge" id="clock">--:--</div>
+  </div>
+  <div class="gps-status-bar" id="gpsStatusBar">
+    <div class="gps-dot"></div>
+    <span id="gpsStatusText">LOCALISATION EN COURS…</span>
+  </div>
+  <div class="route-bar">
+    <div class="route-row">
+      <span class="route-icon">📍</span>
+      <span class="route-label">De</span>
+      <input class="route-input" id="from" type="text" placeholder="Localisation…" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="gps-btn" id="gpsBtn" title="Re-localiser" onclick="locateMe()">🛰️</button>
+    </div>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-icon">↓</span>
+      <div class="divider-line"></div>
+    </div>
+    <div class="route-row">
+      <span class="route-icon">🏭</span>
+      <span class="route-label">Vers</span>
+      <input class="route-input" id="to" type="text" value="Les Granges (Orbe), gare" autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+  </div>
+  <button class="search-btn" id="searchBtn" onclick="search()">
+    <span>🔍</span> Chercher les trains
+  </button>
+  <div class="results" id="results">
+    <div class="state-box">
+      <div class="spinner"></div>
+      <div class="state-text">LOCALISATION EN COURS…</div>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
